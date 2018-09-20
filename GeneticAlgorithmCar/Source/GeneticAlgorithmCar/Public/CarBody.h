@@ -28,7 +28,10 @@ public:
 
 	float CurrentThrottle = 0.0f;
 	float CurrentRotation = 0.0f;
+	//FVector PreviousLocation;
 private:
 	UPrimitiveComponent* TankRoot = nullptr;
+
+	float FitnessValue = 0.0f;
 	
 };

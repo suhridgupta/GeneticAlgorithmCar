@@ -20,6 +20,10 @@ void ACar::BeginPlay()
 void ACar::SetBodyReference(UCarBody* Body)
 {
 	CarBody = Body;
+	// if(CarBody)
+	// {
+	// 	CarBody->PreviousLocation = GetActorLocation();
+	// }
 }
 
 // Called every frame

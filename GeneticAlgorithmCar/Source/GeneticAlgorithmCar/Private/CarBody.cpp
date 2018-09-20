@@ -21,7 +21,10 @@ void UCarBody::DriveCar() {
 	//Middle of the track is where the force is applied, but AddForceAtLocation is done on entire tank (can be done just on track too)
 	FVector ForceLocation = GetComponentLocation();
 
-	UE_LOG(LogTemp,Warning,TEXT("Speed: %f"),CurrentThrottle)
+	FVector DistanceCovered = 0.5*(ForceApplied/TankRoot->GetMass())*GetWorld()->GetDeltaSeconds();
+	FitnessValue += (FMath::Abs(DistanceCovered.Size()))/100.0f; //Scale down to avoid floating point issues
+
+	UE_LOG(LogTemp,Warning,TEXT("FitnessValue: %f"),FitnessValue)
 
 	TankRoot->AddForceAtLocation(ForceApplied, ForceLocation);
 
