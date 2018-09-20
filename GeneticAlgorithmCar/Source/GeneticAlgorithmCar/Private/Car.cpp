@@ -2,6 +2,7 @@
 
 #include "Car.h"
 #include "CarBody.h"
+#include "Runtime/Engine/Public/DrawDebugHelpers.h"
 
 // Sets default values
 ACar::ACar()
@@ -20,10 +21,6 @@ void ACar::BeginPlay()
 void ACar::SetBodyReference(UCarBody* Body)
 {
 	CarBody = Body;
-	// if(CarBody)
-	// {
-	// 	CarBody->PreviousLocation = GetActorLocation();
-	// }
 }
 
 // Called every frame
@@ -33,6 +30,9 @@ void ACar::Tick(float DeltaTime)
 	
 	if (CarBody)
 	{
+		DrawDebugLine(GetWorld(),GetActorLocation()+FVector(0,0,50),GetActorLocation()+GetActorRotation().Vector()*500+FVector(0,0,50),FColor(255,0,0,255),false);
+		DrawDebugLine(GetWorld(),GetActorLocation()+FVector(0,0,50),GetActorLocation()+(GetActorRotation()+FRotator(0,45,0)).Vector()*200+FVector(0,0,50),FColor(255,0,0,255),false);
+		DrawDebugLine(GetWorld(),GetActorLocation()+FVector(0,0,50),GetActorLocation()+(GetActorRotation()+FRotator(0,-45,0)).Vector()*200+FVector(0,0,50),FColor(255,0,0,255),false);
 		CarBody->DriveCar();
 	}
 }
