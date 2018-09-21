@@ -24,7 +24,7 @@ void UCarBody::DriveCar() {
 	FVector DistanceCovered = 0.5*(ForceApplied/TankRoot->GetMass())*GetWorld()->GetDeltaSeconds();
 	FitnessValue += (FMath::Abs(DistanceCovered.Size()))/100.0f; //Scale down to avoid floating point issues
 
-	UE_LOG(LogTemp,Warning,TEXT("FitnessValue: %f"),FitnessValue)
+	//UE_LOG(LogTemp,Warning,TEXT("FitnessValue: %f"),FitnessValue)
 
 	TankRoot->AddForceAtLocation(ForceApplied, ForceLocation);
 

@@ -30,26 +30,31 @@ void ACar::Tick(float DeltaTime)
 	
 	if (CarBody)
 	{
-		//DrawDebugLine(GetWorld(),GetActorLocation()+FVector(0,0,50),GetActorLocation()+GetActorRotation().Vector()*500+FVector(0,0,50),FColor(255,0,0,255),false);
-		CarBody->DriveCar();
+		CarBody->CurrentThrottle = 1.0f;
 		if(GetFirstPhysicsBodyInReach(45.0f))
 		{
 			//TODO Logic For Turning Left
-			DrawDebugLine(GetWorld(),GetActorLocation()+FVector(0,0,50),GetActorLocation()+(GetActorRotation()+FRotator(0,45,0)).Vector()*250+FVector(0,0,50),FColor(0,255,0,255),false);
-			DrawDebugLine(GetWorld(),GetActorLocation()+FVector(0,0,50),GetActorLocation()+(GetActorRotation()+FRotator(0,-45,0)).Vector()*250+FVector(0,0,50),FColor(255,0,0,255),false);
+			CarBody->CurrentRotation = -1.0f;
+			//UE_LOG(LogTemp,Warning,TEXT("Turn Left"))
+			DrawDebugLine(GetWorld(),GetReachLineStart(),GetReachLineEnd(45),FColor(0,255,0,255),false);
+			DrawDebugLine(GetWorld(),GetReachLineStart(),GetReachLineEnd(-45),FColor(255,0,0,255),false);
 		}
 		else if(GetFirstPhysicsBodyInReach(-45.0f))
 		{
 			//TODO Logic For Turning Right
-			DrawDebugLine(GetWorld(),GetActorLocation()+FVector(0,0,50),GetActorLocation()+(GetActorRotation()+FRotator(0,45,0)).Vector()*250+FVector(0,0,50),FColor(255,0,0,255),false);
-			DrawDebugLine(GetWorld(),GetActorLocation()+FVector(0,0,50),GetActorLocation()+(GetActorRotation()+FRotator(0,-45,0)).Vector()*250+FVector(0,0,50),FColor(0,255,0,255),false);
+			CarBody->CurrentRotation = 1.0f;
+			//UE_LOG(LogTemp,Warning,TEXT("Turn Right"))
+			DrawDebugLine(GetWorld(),GetReachLineStart(),GetReachLineEnd(45),FColor(255,0,0,255),false);
+			DrawDebugLine(GetWorld(),GetReachLineStart(),GetReachLineEnd(-45),FColor(0,255,0,255),false);
 		}
 		else
 		{
 			//This Lady's NOT For Turning
-			DrawDebugLine(GetWorld(),GetActorLocation()+FVector(0,0,50),GetActorLocation()+(GetActorRotation()+FRotator(0,45,0)).Vector()*250+FVector(0,0,50),FColor(255,0,0,255),false);
-			DrawDebugLine(GetWorld(),GetActorLocation()+FVector(0,0,50),GetActorLocation()+(GetActorRotation()+FRotator(0,-45,0)).Vector()*250+FVector(0,0,50),FColor(255,0,0,255),false);
+			DrawDebugLine(GetWorld(),GetReachLineStart(),GetReachLineEnd(45),FColor(255,0,0,255),false);
+			DrawDebugLine(GetWorld(),GetReachLineStart(),GetReachLineEnd(-45),FColor(255,0,0,255),false);
 		}
+		CarBody->DriveCar();
+		CarBody->CurrentRotation = 0.0f;
 	}
 }
 
@@ -76,7 +81,7 @@ bool ACar::GetFirstPhysicsBodyInReach(float LineAngle)
 	//Only Log if ActorHit is NOT a nullptr. UE4 Will Crash Otherwise
 	if (ActorHit)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Collision WIth %s"), *(ActorHit->GetName()))
+		//UE_LOG(LogTemp, Warning, TEXT("Collision WIth %s"), *(ActorHit->GetName()))
 		return true;
 	}
 	return false;
@@ -89,5 +94,5 @@ FVector ACar::GetReachLineStart()
 
 FVector ACar::GetReachLineEnd(float LineAngle)
 {
-	return GetActorLocation()+(GetActorRotation()+FRotator(0,LineAngle,0)).Vector()*250+FVector(0,0,50);
+	return GetActorLocation()+(GetActorRotation()+FRotator(0,LineAngle,0)).Vector()*350+FVector(0,0,50);
 }
