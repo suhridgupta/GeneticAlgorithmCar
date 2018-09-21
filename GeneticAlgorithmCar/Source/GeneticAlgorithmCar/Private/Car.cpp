@@ -30,10 +30,26 @@ void ACar::Tick(float DeltaTime)
 	
 	if (CarBody)
 	{
-		DrawDebugLine(GetWorld(),GetActorLocation()+FVector(0,0,50),GetActorLocation()+GetActorRotation().Vector()*500+FVector(0,0,50),FColor(255,0,0,255),false);
-		DrawDebugLine(GetWorld(),GetActorLocation()+FVector(0,0,50),GetActorLocation()+(GetActorRotation()+FRotator(0,45,0)).Vector()*200+FVector(0,0,50),FColor(255,0,0,255),false);
-		DrawDebugLine(GetWorld(),GetActorLocation()+FVector(0,0,50),GetActorLocation()+(GetActorRotation()+FRotator(0,-45,0)).Vector()*200+FVector(0,0,50),FColor(255,0,0,255),false);
+		//DrawDebugLine(GetWorld(),GetActorLocation()+FVector(0,0,50),GetActorLocation()+GetActorRotation().Vector()*500+FVector(0,0,50),FColor(255,0,0,255),false);
 		CarBody->DriveCar();
+		if(GetFirstPhysicsBodyInReach(45.0f))
+		{
+			//TODO Logic For Turning Left
+			DrawDebugLine(GetWorld(),GetActorLocation()+FVector(0,0,50),GetActorLocation()+(GetActorRotation()+FRotator(0,45,0)).Vector()*250+FVector(0,0,50),FColor(0,255,0,255),false);
+			DrawDebugLine(GetWorld(),GetActorLocation()+FVector(0,0,50),GetActorLocation()+(GetActorRotation()+FRotator(0,-45,0)).Vector()*250+FVector(0,0,50),FColor(255,0,0,255),false);
+		}
+		else if(GetFirstPhysicsBodyInReach(-45.0f))
+		{
+			//TODO Logic For Turning Right
+			DrawDebugLine(GetWorld(),GetActorLocation()+FVector(0,0,50),GetActorLocation()+(GetActorRotation()+FRotator(0,45,0)).Vector()*250+FVector(0,0,50),FColor(255,0,0,255),false);
+			DrawDebugLine(GetWorld(),GetActorLocation()+FVector(0,0,50),GetActorLocation()+(GetActorRotation()+FRotator(0,-45,0)).Vector()*250+FVector(0,0,50),FColor(0,255,0,255),false);
+		}
+		else
+		{
+			//This Lady's NOT For Turning
+			DrawDebugLine(GetWorld(),GetActorLocation()+FVector(0,0,50),GetActorLocation()+(GetActorRotation()+FRotator(0,45,0)).Vector()*250+FVector(0,0,50),FColor(255,0,0,255),false);
+			DrawDebugLine(GetWorld(),GetActorLocation()+FVector(0,0,50),GetActorLocation()+(GetActorRotation()+FRotator(0,-45,0)).Vector()*250+FVector(0,0,50),FColor(255,0,0,255),false);
+		}
 	}
 }
 
@@ -44,3 +60,34 @@ void ACar::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 }
 
+bool ACar::GetFirstPhysicsBodyInReach(float LineAngle)
+{
+	FHitResult Hit;
+	FCollisionQueryParams TraceParameters(FName(TEXT("")), false, GetOwner());
+	//Get Line Trace(Ray-Cast) Till Reach Distance
+	GetWorld()->LineTraceSingleByObjectType(
+		OUT Hit,
+		GetReachLineStart(),
+		GetReachLineEnd(LineAngle),
+		FCollisionObjectQueryParams(ECollisionChannel::ECC_WorldStatic),
+		TraceParameters
+	);
+	AActor *ActorHit = Hit.GetActor();
+	//Only Log if ActorHit is NOT a nullptr. UE4 Will Crash Otherwise
+	if (ActorHit)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Collision WIth %s"), *(ActorHit->GetName()))
+		return true;
+	}
+	return false;
+}
+
+FVector ACar::GetReachLineStart()
+{
+	return GetActorLocation()+FVector(0,0,50);
+}
+
+FVector ACar::GetReachLineEnd(float LineAngle)
+{
+	return GetActorLocation()+(GetActorRotation()+FRotator(0,LineAngle,0)).Vector()*250+FVector(0,0,50);
+}
