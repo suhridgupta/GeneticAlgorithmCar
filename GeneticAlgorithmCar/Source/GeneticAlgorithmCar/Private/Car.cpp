@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Car.h"
+#include "FinishLine.h"
 #include "CarBody.h"
 #include "Runtime/Engine/Public/DrawDebugHelpers.h"
 
@@ -16,6 +17,7 @@ ACar::ACar()
 void ACar::BeginPlay()
 {
 	Super::BeginPlay();
+	//GetOwner()->EndRace.AddUniqueDynamic(this,&ACar::DriveFinished);
 }
 
 void ACar::SetBodyReference(UCarBody* Body)
@@ -55,6 +57,11 @@ void ACar::Tick(float DeltaTime)
 		}
 		CarBody->DriveCar();
 		CarBody->CurrentRotation = 0.0f;
+
+		if(RaceFinished)
+		{
+			DriveFinished();
+		}
 	}
 }
 
@@ -95,4 +102,10 @@ FVector ACar::GetReachLineStart()
 FVector ACar::GetReachLineEnd(float LineAngle)
 {
 	return GetActorLocation()+(GetActorRotation()+FRotator(0,LineAngle,0)).Vector()*350+FVector(0,0,50);
+}
+
+void ACar::DriveFinished()
+{
+	UE_LOG(LogTemp,Warning,TEXT("Reached Finish Line"))
+	RaceFinished = false;
 }

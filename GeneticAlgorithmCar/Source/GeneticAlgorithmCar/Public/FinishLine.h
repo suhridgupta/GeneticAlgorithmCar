@@ -9,6 +9,7 @@
 /**
  * 
  */
+
 UCLASS()
 class GENETICALGORITHMCAR_API AFinishLine : public ATriggerBox
 {
@@ -22,6 +23,5 @@ public:
 
 	UFUNCTION()
 	void ReachedFinishLine(class AActor* OverlappedActor, class AActor* OtherActor);
-	
 	
 };

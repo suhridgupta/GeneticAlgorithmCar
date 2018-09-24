@@ -7,6 +7,7 @@
 #include "Car.generated.h"
 
 class UCarBody;
+class AFinishLine;
 
 UCLASS()
 class GENETICALGORITHMCAR_API ACar : public APawn
@@ -33,11 +34,16 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	bool RaceFinished = false;
+
 private:
 	bool GetFirstPhysicsBodyInReach(float LineAngle);
 
 	FVector GetReachLineStart();
 
 	FVector GetReachLineEnd(float LineAngle);
+
+	UFUNCTION()
+	void DriveFinished();
 	
 };
